@@ -171,7 +171,7 @@ class _ScreenSettingsState extends State<ScreenSettings> {
               CupertinoListTile(
                 padding: const EdgeInsets.all(16),
                 title: const Text('IP-Address'),
-                subtitle: const Text('IP of the Receiver.'),
+                subtitle: const Text('IP of the Receiver'),
                 trailing: SizedBox(
                   width: 140,
                   child: CupertinoTextField(
@@ -213,7 +213,7 @@ class _ScreenSettingsState extends State<ScreenSettings> {
               CupertinoListTile(
                 padding: const EdgeInsets.all(16),
                 title: const Text('Port'),
-                subtitle: const Text('Port of the Receiver.'),
+                subtitle: const Text('Port of the Receiver'),
                 trailing: SizedBox(
                   width: 140,
                   child: CupertinoTextField(
@@ -267,7 +267,7 @@ class _ScreenSettingsState extends State<ScreenSettings> {
                 padding: const EdgeInsets.all(16),
                 title: Text('Show disabled Tracking Features'),
                 subtitle: Text(
-                    'Show also all disabled tracking features in the list.'),
+                    'Show also all disabled tracking features in the list'),
                 trailing: CupertinoSwitch(
                   value: showFeatures,
                   onChanged: (value) {
@@ -278,7 +278,7 @@ class _ScreenSettingsState extends State<ScreenSettings> {
               CupertinoListTile(
                 padding: const EdgeInsets.all(16),
                 title: Text('Show Help'),
-                subtitle: Text('Show the initial app tutorial.'),
+                subtitle: Text('Show the initial app tutorial'),
                 trailing: CupertinoSwitch(
                   value: showHelp,
                   onChanged: (value) {

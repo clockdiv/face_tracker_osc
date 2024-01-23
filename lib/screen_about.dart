@@ -64,7 +64,7 @@ class ScreenAbout extends StatelessWidget {
                 // color: CupertinoColors.activeBlue,
                 width: double.infinity,
                 child: SvgPicture.asset('assets/logos/Logo_ErnstBusch.svg',
-                    width: 180),
+                    width: 240),
               ),
               const SizedBox(height: 40),
               SizedBox(
@@ -72,7 +72,7 @@ class ScreenAbout extends StatelessWidget {
                 width: double.infinity,
                 child: SvgPicture.asset(
                     'assets/logos/Logo_LaborFuerDigitalitaet.svg',
-                    width: 80),
+                    width: 120),
               ),
               const SizedBox(height: 40),
               SizedBox(
@@ -84,7 +84,7 @@ class ScreenAbout extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               const Text(
-                'MIT License, Copyright (c) 2023',
+                'MIT License, Copyright (c) 2024',
                 style: TextStyle(color: CupertinoColors.black, fontSize: 12),
               ),
               const Text(
@@ -94,14 +94,15 @@ class ScreenAbout extends StatelessWidget {
               const SizedBox(height: 20),
               RichText(
                 text: TextSpan(
-                    text: 'github.com/clockdiv/Face2OSC',
+                    text: 'github.com/clockdiv/face_tracker_osc',
                     style: const TextStyle(
                         color: CupertinoColors.black,
                         fontSize: 12,
                         decoration: TextDecoration.underline),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () async {
-                        Uri url = Uri.https('github.com', '/clockdiv/Face2OSC');
+                        Uri url = Uri.https(
+                            'github.com', '/clockdiv/face_tracker_osc');
                         if (await canLaunchUrl(url)) {
                           await launchUrl(url);
                         } else {

@@ -1,11 +1,14 @@
 //import 'dart:html';
 
-import 'dart:ffi';
+// import 'dart:ffi';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:arkit_plugin/arkit_plugin.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'dart:io';
 import 'package:osc/src/message.dart'; // https://github.com/pq/osc
@@ -137,7 +140,8 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
       featuresSettings[element] = TrackingFeature();
       // trackingFeatureGeometries.add(new ARKitNode());
     }
-    featuresSettings["browDown_R"]!.enabled = false;
+    // featuresSettings["browDown_R"]!.enabled = false;
+
     // _ipTextController = TextEditingController(text: ('192.168.178.100'));
     // _portTextController = TextEditingController(text: ('4444'));
 
@@ -403,35 +407,119 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
         SliverToBoxAdapter(
           child: Column(
             children: [
-              CupertinoListSection.insetGrouped(
-                footer: Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: RichText(
-                      text: TextSpan(
+              Padding(
+                padding: const EdgeInsets.all(0),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  /* ------------------------------------------------------- */
+                  /* --- Info-Text, Start-Stop-Button --- */
+                  /* ------------------------------------------------------- */
+                  child: Row(
+                    children: [
+                      /* ------------------------------------------------------- */
+                      /* --- Info-Text / IP Address etc. --- */
+                      /* ------------------------------------------------------- */
+                      RichText(
+                        text: TextSpan(
                           style: const TextStyle(
                             fontSize: 10,
                             color: CupertinoColors.systemGrey,
                           ),
                           children: <TextSpan>[
-                        const TextSpan(
-                            text:
-                                'Only enabled tracking features are sent to the given IP address.\n\n'),
-                        const TextSpan(text: 'IP-Address of the Receiver: '),
-                        TextSpan(
-                            text: '$oscIpAddress\n',
-                            style: TextStyle(color: Colors.black87)),
-                        const TextSpan(text: 'Port of the Receiver: '),
-                        TextSpan(
-                            text: '$oscPort\n',
-                            style: TextStyle(color: Colors.black87)),
-                        const TextSpan(
-                            text: 'Number of enabled Tracking Features: '),
-                        TextSpan(
-                            text: '$numberOfChildren',
-                            style: TextStyle(color: Colors.black87)),
-                      ])),
+                            // const TextSpan(
+                            //     text:
+                            //         'Only enabled tracking features are sent to the given IP address.\n\n'),
+                            const TextSpan(
+                                text: 'IP-Address of the Receiver: '),
+                            TextSpan(
+                                text: '$oscIpAddress\n',
+                                style: TextStyle(color: Colors.black87)),
+                            const TextSpan(text: 'Port of the Receiver: '),
+                            TextSpan(
+                                text: '$oscPort\n',
+                                style: TextStyle(color: Colors.black87)),
+                            const TextSpan(
+                                text: 'Number of enabled Tracking Features: '),
+                            TextSpan(
+                                text: '$numberOfChildren',
+                                style: TextStyle(color: Colors.black87)),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      /* ------------------------------------------------------- */
+                      /* --- Start / Stop OSC Button                         --- */
+                      /* ------------------------------------------------------- */
+                      RawMaterialButton(
+                        constraints: const BoxConstraints(
+                            minWidth: 36.0, minHeight: 36.0),
+                        onPressed: _toggleOSCSocket,
+                        elevation: 0,
+                        fillColor: _isSending
+                            ? _buttonToggleSendingOff
+                            : _buttonToggleSendingOn,
+                        padding: const EdgeInsets.all(15.0),
+                        shape: const CircleBorder(),
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                            children: <TextSpan>[
+                              if (!_isSending) ...[
+                                const TextSpan(
+                                    text: "Start",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal)),
+                              ],
+                              if (_isSending) ...[
+                                const TextSpan(
+                                    text: "Stop",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal)),
+                              ],
+                              const TextSpan(text: '\nOSC'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                hasLeading: true,
+              ),
+              /* ------------------------------------------------------- 
+                Mini-Tutorial
+                "Swipe left/right...."
+              -------------------------------------------------------- */
+              Row(
+                children: [
+                  if (showHelp) ...[
+                    Image.asset(
+                      'assets/img/help_about.png',
+                      width: 120,
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        _setPrefShowHelp(false);
+                      },
+                      child: Image.asset(
+                        'assets/img/help_gotit.png',
+                        width: 80,
+                      ),
+                    ),
+                    const Spacer(),
+                    Image.asset(
+                      'assets/img/help_settings.png',
+                      width: 120,
+                    ),
+                  ],
+                ],
+              ),
+              CupertinoListSection.insetGrouped(
                 children: [
                   /* ------------------------------------------------------- */
                   /* --- Buttons on top of List to controll all Features --- */
@@ -494,8 +582,7 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
                           child: GestureDetector(
                             onTapDown: (TapDownDetails details) {
                               setState(() {
-                                _buttonDisableAll =
-                                    CupertinoColors.systemGrey.darkColor;
+                                _buttonDisableAll = Colors.black54;
                               });
                             },
                             onTapUp: (TapUpDetails details) {
@@ -526,69 +613,9 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
                             ),
                           ),
                         ),
-                        /* Button StartStop Tracking */
-                        Expanded(
-                          flex: 1,
-                          child: GestureDetector(
-                            onTapDown: (TapDownDetails details) {
-                              setState(() {
-                                //_buttonToggleSending = _buttonToggleSending.;
-                              });
-                            },
-                            onTapUp: (TapUpDetails details) {
-                              _toggleOSCSocket();
-                            },
-                            child: Container(
-                              height: 48,
-                              alignment: Alignment.center,
-                              color: _isSending
-                                  ? _buttonToggleSendingOff
-                                  : _buttonToggleSendingOn,
-                              child: Text(
-                                _isSending ? "Stop OSC" : "Start OSC",
-                                style: const TextStyle(
-                                  color: CupertinoColors.white,
-                                  fontSize: 14,
-                                  fontFamily: '.SF UI Text',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
-                ],
-              ),
-              /* ------------------------------------------------------- 
-                Mini-Tutorial
-                "Swipe left/right...."
-              -------------------------------------------------------- */
-              Row(
-                children: [
-                  if (showHelp) ...[
-                    Image.asset(
-                      'assets/img/help_about.png',
-                      width: 120,
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        _setPrefShowHelp(false);
-                      },
-                      child: Image.asset(
-                        'assets/img/help_gotit.png',
-                        width: 80,
-                      ),
-                    ),
-                    const Spacer(),
-                    Image.asset(
-                      'assets/img/help_settings.png',
-                      width: 120,
-                    ),
-                  ],
                 ],
               ),
               /* ------------------------------------------------------- 
@@ -600,40 +627,21 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
                   for (int i = 0; i < featuresSettings.length; i++)
                     if ((featuresSettings.values.elementAt(i).enabled ||
                         showFeatures)) ...[
-                      Slidable(
-                        closeOnScroll: false,
-                        endActionPane: ActionPane(
-                          motion: const BehindMotion(),
-                          extentRatio: 0.3,
-                          children: [
-                            SlidableAction(
-                              onPressed: (BuildContext context) {
-                                setState(
-                                  () {
-                                    featuresSettings.values
-                                            .elementAt(i)
-                                            .enabled =
-                                        !featuresSettings.values
-                                            .elementAt(i)
-                                            .enabled;
-                                  },
-                                );
-                              },
-                              backgroundColor: CupertinoColors.systemBlue,
-                              foregroundColor: CupertinoColors.white,
-                              label:
-                                  featuresSettings.values.elementAt(i).enabled
-                                      ? 'Disable'
-                                      : 'Enable',
-                            )
-                          ],
-                        ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(
+                            () {
+                              featuresSettings.values.elementAt(i).enabled =
+                                  !featuresSettings.values.elementAt(i).enabled;
+                            },
+                          );
+                        },
                         child: blendShapeRowItem(
                             featuresSettings.keys.elementAt(i),
                             featuresSettings.values.elementAt(i).weight,
                             featuresSettings.values.elementAt(i).enabled,
                             i),
-                      )
+                      ),
                     ],
                   /* ------------------------------------------------------- 
                     Helper if no Tracking Features are selected
@@ -682,58 +690,57 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
 
   Widget blendShapeRowItem(
       String name, double weight, bool enabled, int index) {
-    return SafeArea(
-      top: false,
-      bottom: false,
-      left: false,
-      right: false,
-      minimum: const EdgeInsets.only(
-        left: 0,
-        top: 0,
-        bottom: 0,
-        right: 8,
-      ),
-      child: CupertinoListTile(
-        padding: EdgeInsets.zero,
-        leading: GestureDetector(
-          onTap: () {
-            setState(
-              () {
-                featuresSettings.values.elementAt(index).enabled =
-                    !featuresSettings.values.elementAt(index).enabled;
-                // developer.log("changed");
-              },
-            );
-          },
-          child: Container(
-            color: CupertinoColors.white.withAlpha(0),
-            width: 64,
-            height: 64,
-            child: Icon(
-              CupertinoIcons.circle_filled,
-              semanticLabel: 'Enable/Disable Feature',
-              size: 12,
-              color: enabled
-                  ? CupertinoColors.activeBlue
-                  : CupertinoColors.inactiveGray,
-            ),
-          ),
-        ),
-        leadingSize: 64,
-        leadingToTitle: 0,
-        title: Text('/' + name),
-        // subtitle: Text(valueToString(weight)),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 600),
+      // ToDo: animate height to 0 when disabling feature
+      height: enabled || showFeatures ? 64 : 64,
+      child: Container(
+        alignment: Alignment.bottomCenter,
+        color: Colors.white,
+        height: 64,
+        child: Row(
           children: [
-            SizedBox(width: 24, child: Text(valueToString(weight))),
             SizedBox(
-              width: weight * 100,
-              height: 2,
-              child: Container(
-                color: CupertinoColors.systemGrey3,
+              width: 64,
+              height: 64,
+              child: AnimatedContainer(
+                // clipBehavior: Clip.hardEdge,
+                duration: const Duration(milliseconds: 200),
+                margin: EdgeInsets.all(enabled ? 23 : 25),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(25)),
+                  color: enabled
+                      ? CupertinoColors.systemBlue
+                      : CupertinoColors.inactiveGray,
+                ),
               ),
             ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('/$name'),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                        width: 24,
+                        child: Text(
+                          valueToString(weight),
+                          style: const TextStyle(fontSize: 12),
+                        )),
+                    SizedBox(
+                      width: weight * 100,
+                      height: 2,
+                      child: Container(
+                        color: CupertinoColors.systemGrey2,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )
           ],
         ),
       ),
