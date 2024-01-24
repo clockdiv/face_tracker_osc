@@ -46,7 +46,6 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
 
   ARKitNode? leftEye;
   ARKitNode? rightEye;
-  // List<ARKitNode?> trackingFeatureGeometries = [];
 
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late Future<String> _ipAddress;
@@ -58,18 +57,6 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
   final Color _buttonToggleSendingOn = CupertinoColors.systemGreen;
   final Color _buttonToggleSendingOff = CupertinoColors.systemRed;
 
-  // Color _buttonEmpty = CupertinoColors.systemGreen;
-  // Color _buttonSettings = CupertinoColors.systemOrange;
-  // Color _textBorderIpAdress = CupertinoColors.systemGrey5.withAlpha(0);
-  // Color _textBorderPort = CupertinoColors.systemGrey5.withAlpha(0);
-  // // bool _showAllFeatures = true;
-  // late TextEditingController _ipTextController;
-  // late TextEditingController _portTextController;
-  // final FocusNode _focusNodeIPTextfield = FocusNode();
-  // final FocusNode _focusNodePortTextfield = FocusNode();
-
-  // late InternetAddress destination;
-  // late int port;
   RawDatagramSocket? socket;
   bool _isSending = false;
   late Future<bool> _showHelp;
@@ -135,20 +122,10 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
   Map<String, TrackingFeature> featuresSettings = {};
 
   Face2OSCHomePageState() {
-    // trackingFeatureGeometries = new List<ARKitNode>.empty();
     for (var element in features) {
       featuresSettings[element] = TrackingFeature();
-      // trackingFeatureGeometries.add(new ARKitNode());
     }
     // featuresSettings["browDown_R"]!.enabled = false;
-
-    // _ipTextController = TextEditingController(text: ('192.168.178.100'));
-    // _portTextController = TextEditingController(text: ('4444'));
-
-    // destination = InternetAddress(ScreenSettings().ip);
-    // port = int.parse(ScreenSettings().port);
-    // developer.log(destination.toString());
-    // developer.log(port.toString());
   }
 
   @override
@@ -274,21 +251,6 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
       //   _toggleGeometry(featuresSettings[key]!.geometry, featuresSettings[key]!.enabled);
       // });
 
-      // Send OSC for all enabled Features
-
-      // RawDatagramSocket.bind(InternetAddress.anyIPv4, 0, reuseAddress: true, reusePort: true).then((socket) {
-      //   featuresSettings.forEach((key, value) {
-      //     if (value.enabled) {
-      //       String address = '/$key';
-      //       final arguments = <Object>[];
-      //       arguments.add(featuresSettings[key]!.weight);
-      //       final message = OSCMessage(address, arguments: arguments);
-      //       final bytes = message.toBytes();
-      //       socket.send(bytes, destination, port);
-      //     }
-      //   });
-      // });
-
       if (socket != null && _isSending) {
         featuresSettings.forEach((key, value) {
           if (value.enabled) {
@@ -297,9 +259,6 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
             arguments.add(featuresSettings[key]!.weight);
             final message = OSCMessage(address, arguments: arguments);
             final bytes = message.toBytes();
-            //socket?.send(bytes, destination, port);
-            // socket?.send(bytes, InternetAddress(ScreenSettings().ip),
-            //     int.parse(ScreenSettings().port));
             socket?.send(
                 bytes, InternetAddress(oscIpAddress), int.parse(oscPort));
           }
@@ -346,41 +305,16 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
     return Center(
       child: Column(
         children: [
-          // ----------- 4. Stacked ARKitSceneView with PAGEVIEW. Pageview has an empty Container and the SettingsScreen
           Expanded(
             flex: 5,
-            // child: Container(
-            //   child: Text("hello world 1"),
-            //   color: CupertinoColors.activeBlue,
-            //   alignment: Alignment.center,
-            // ),
             child: ClipRRect(
-              //borderRadius: BorderRadius.all(Radius.circular(16)),
+              // borderRadius: BorderRadius.all(Radius.circular(32)),
               child: Container(
                 alignment: Alignment.center,
-                color: CupertinoColors.activeGreen,
-                //child: Text("green area"),
                 child: ARKitSceneView(
                   configuration: ARKitConfiguration.faceTracking,
                   onARKitViewCreated: onARKitViewCreated,
                 ),
-                // child: Stack(
-                //   children: [
-                //     ARKitSceneView(
-                //       configuration: ARKitConfiguration.faceTracking,
-                //       onARKitViewCreated: onARKitViewCreated,
-                //     ),
-                //     PageView(
-                //       controller: PageController(initialPage: 1),
-                //       physics: const ClampingScrollPhysics(),
-                //       children: [
-                //         ScreenAbout(),
-                //         Container(),
-                //         ScreenSettings(),
-                //       ],
-                //     ),
-                //   ],
-                // ),
               ),
             ),
           ),
@@ -400,10 +334,6 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
     return CustomScrollView(
       semanticChildCount: featuresSettings.length,
       slivers: <Widget>[
-        // const CupertinoSliverNavigationBar(
-        //   largeTitle: Text('Blendshape_Row_Items'),
-        // ),
-
         SliverToBoxAdapter(
           child: Column(
             children: [
@@ -660,7 +590,7 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
                               children: <TextSpan>[
                                 TextSpan(
                                     text:
-                                        'To enabled Face Tracking and send it via OSC,\n'),
+                                        'To enabled Face Tracking and send it via OSC,\n\n'),
                                 TextSpan(text: '∙ press '),
                                 TextSpan(
                                     text: '\'Enable all\' ',
@@ -671,7 +601,13 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
                                     text:
                                         '\'Show disabled Tracking Features\' ',
                                     style: TextStyle(color: Colors.black87)),
-                                TextSpan(text: 'in Settings (swipe right)'),
+                                TextSpan(
+                                    text:
+                                        'in Settings (swipe right) and enable the features individually\n'),
+                                TextSpan(text: '\nFinally, press '),
+                                TextSpan(
+                                    text: '\'Start OSC\'',
+                                    style: TextStyle(color: Colors.black87)),
                               ],
                             ),
                           ),
@@ -704,9 +640,8 @@ class Face2OSCHomePageState extends State<Face2OSCHomePage> {
               width: 64,
               height: 64,
               child: AnimatedContainer(
-                // clipBehavior: Clip.hardEdge,
                 duration: const Duration(milliseconds: 200),
-                margin: EdgeInsets.all(enabled ? 23 : 25),
+                margin: EdgeInsets.all(enabled ? 24 : 26),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
                   color: enabled

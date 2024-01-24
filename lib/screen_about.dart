@@ -39,7 +39,7 @@ class ScreenAbout extends StatelessWidget {
                       children: [
                         //          const SizedBox(height: 20),
                         Text(
-                          'Developed at the "Digital Lab" as part of the School for Performing Arts "Ernst Busch" in Berlin/Germany. The "Digital Lab" was funded by "Stiftung Innovation in der Hochschullehre".',
+                          'Developed at the "Digital Lab" as part of the "Ernst Busch" Academy of Dramatic Arts in Berlin/Germany. The "Digital Lab" was funded by "Stiftung Innovation in der Hochschullehre".',
                           style: TextStyle(
                               color: CupertinoColors.black, fontSize: 12),
                         ),
