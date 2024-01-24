@@ -19,3 +19,8 @@ The only use of this information is to track the user’s head and face to send 
 
 None of the information collected by the TrueDepth API ever leaves the user's device in any other way nor is it persistently stored on the device. Face Tracker OSC will not store, or retain, any data captured by the TrueDepth camera on servers or use customer face data for any purpose other than the app’s core functionality. The Face Tracker OSC app does not and will not use customer face data to personally identify any user. Contact us if you have any privacy questions, concerns or suggestions.
 
+## About
+
+Face Tracker OSC is developed at the "Digital Lab" as part of the ["Ernst Busch" Academy of Dramatic Arts](https://www.hfs-berlin.de) in Berlin/Germany. The "Digital Lab" was funded by "[Stiftung Innovation in der Hochschullehre](https://stiftung-hochschullehre.de)".
+
+MIT License, Copyright (c) 2024 Hochschule für Schauspielkunst Ernst Busch
