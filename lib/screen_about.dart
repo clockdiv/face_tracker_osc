@@ -94,6 +94,25 @@ class ScreenAbout extends StatelessWidget {
               const SizedBox(height: 20),
               RichText(
                 text: TextSpan(
+                    text: 'Data Privacy Policy',
+                    style: const TextStyle(
+                        color: CupertinoColors.black,
+                        fontSize: 12,
+                        decoration: TextDecoration.underline),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        Uri url =
+                            Uri.https('julianjungel.de', '/FaceTrackerOSC');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      }),
+              ),
+              const SizedBox(height: 20),
+              RichText(
+                text: TextSpan(
                     text: 'github.com/clockdiv/face_tracker_osc',
                     style: const TextStyle(
                         color: CupertinoColors.black,
